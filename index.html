@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Biodata Slider</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body {
+            min-height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            color: #f6f8f0;
+            background: linear-gradient(135deg, #3a8dde 0%, #7b2ff2 100%);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        h2.title {
+            text-align: center; 
+            margin-top: 40px; 
+            font-size: 2.5rem; 
+            letter-spacing: 2px; 
+            color: #fff; 
+            text-shadow: 0 0 10px #3a8dde, 0 0 20px #3a8dde, 0 0 30px #7b2ff2, 0 0 40px #7b2ff2;
+        }
+        /* Slider Container */
+        .slider-container {
+            max-width: 1200px;
+            width: 90vw;
+            margin: 40px auto 80px auto;
+            position: relative;
+            overflow: hidden;
+            background: rgba(20, 24, 40, 0.85);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            padding: 24px 0 48px 0;
+        }
+        /* Slides Wrapper */
+        .slides-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            will-change: transform;
+        }
+        /* Each Slide holds 2 cards for layout */
+        .slide {
+            min-width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        /* Card style */
+        .biodata-card {
+            background: rgba(40, 44, 60, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+            padding: 24px 18px;
+            width: 280px;
+            text-align: center;
+            transition: transform 0.2s;
+            opacity: 1 !important;
+            transform: none !important;
+            cursor: pointer;
+        }
+        .biodata-card:hover {
+            transform: scale(1.07);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+            z-index: 10;
+        }
+        .biodata-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 12px auto;
+            display: block;
+        }
+        .biodata-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.4em;
+            color: #00aaff;
+            text-shadow: 0 0 5px #00aaff;
+        }
+        .biodata-card p {
+            margin: 4px 0;
+            font-size: 1em;
+            color: #ddd;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .biodata-card {
+                width: 230px;
+                padding: 18px 14px;
+            }
+            .biodata-card h3 {
+                font-size: 1.1em;
+            }
+            .biodata-card p {
+                font-size: 0.9em;
+            }
+        }
+        @media (max-width: 600px) {
+            .slide {
+                flex-direction: column;
+                align-items: center;
+            }
+            .biodata-card {
+                width: 90vw;
+                margin-bottom: 20px;
+            }
+        }
+        /* Password Slide Overlay */
+        #password-overlay {
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg,#FFD700 0%, #00FF7F 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .welcome-letter {
+            opacity: 0;
+            transform: translateY(-30px) scale(0.8);
+            display: inline-block;
+            animation: welcomeIn 0.5s forwards;
+            background: linear-gradient(90deg, #0066ff, #9933ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            font-size: 6em;
+            font-weight: bold;
+        }
+        .welcome-letter:nth-child(1) { animation-delay: 0s; }
+        .welcome-letter:nth-child(2) { animation-delay: 0.12s; }
+        .welcome-letter:nth-child(3) { animation-delay: 0.24s; }
+        .welcome-letter:nth-child(4) { animation-delay: 0.36s; }
+        .welcome-letter:nth-child(5) { animation-delay: 0.48s; }
+        .welcome-letter:nth-child(6) { animation-delay: 0.60s; }
+        .welcome-letter:nth-child(7) { animation-delay: 0.72s; }
+        @keyframes welcomeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        /* Footer and about section styles */
+        .footer-text {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 48px;
+            text-align: center;
+            color: #fff;
+            font-size: 1.3em;
+            opacity: 0.85;
+            z-index: 1000;
+            font-family: Arial, sans-serif;
+            pointer-events: none;
+        }
+        .footer-copyright {
+            position: fixed;
+            bottom: 12px;
+            right: 18px;
+            color: #fff;
+            font-size: 0.5em;
+            opacity: 0.7;
+            z-index: 1000;
+            font-family: Arial, sans-serif;
+            pointer-events: none;
+        }
+        .about-section {
+            background: rgba(255,255,255,0.85);
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            padding: 24px 32px;
+            margin: 0 auto 32px auto;
+            max-width: 900px;
+            width: 64vw;
+            text-align: center;
+        }
+        .about-section h2 {
+            margin-top: 0;
+            color: #0072ff;
+        }
+        .about-section p {
+            margin-bottom: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Slide Overlay -->
+    <div id="password-overlay">
+        <div style="display:flex;justify-content:center;gap:0.1em;margin-bottom:24px;">
+            <span class="welcome-letter">W</span>
+            <span class="welcome-letter">E</span>
+            <span class="welcome-letter">L</span>
+            <span class="welcome-letter">C</span>
+            <span class="welcome-letter">O</span>
+            <span class="welcome-letter">M</span>
+            <span class="welcome-letter">E</span>
+        </div>
+        <div style="background:rgba(255,255,255,0.95);padding:40px 32px;border-radius:24px;box-shadow:0 8px 32px rgba(0,0,0,0.25);text-align:center;">
+            <h2 style="margin-bottom:24px;color:#0072ff;">Enter Password</h2>
+            <input id="password-input" type="password" placeholder="Password" style="padding:12px 16px;font-size:1.2em;border-radius:8px;border:1px solid #ccc;outline:none;width:220px;margin-bottom:16px;">
+            <br>
+            <button id="password-submit" style="padding:10px 32px;font-size:1em;border-radius:8px;background:#0072ff;color:#fff;border:none;cursor:pointer;">Enter</button>
+            <div id="password-error" style="color:red;margin-top:12px;display:none;">Wrong password. Try again.</div>
+        </div>
+        <div id="greeting-card" style="background:rgba(255,255,255,0.85);padding:24px 32px;border-radius:18px;box-shadow:0 4px 24px rgba(0,0,0,0.15);margin-top:32px;min-width:320px;max-width:90vw;text-align:center;">
+            <div id="greeting-text" style="font-size:2em;font-weight:bold;color:#0072ff;margin-bottom:8px;"></div>
+            <div id="greeting-date" style="font-size:1.2em;color:#333;"></div>
+            <div id="greeting-time" style="font-size:1.1em;color:#555;margin-top:6px;"></div>
+        </div>
+    </div>
+
+    <h2 class="title">THE SIXTH GRADE</h2>
+
+    <div class="slider-container">
+        <div class="slides-wrapper" id="slides-wrapper">
+            <!-- Slides will be injected here from JS -->
+        </div>
+    </div>
+
+    <div class="footer-text">
+        DATA INI DIAMBIL PADA TAHUN 2025 (TIDAK PASTI)
+    </div>
+    <div class="about-section">
+        <h2>Thanks To :</h2>
+        <p>Dama, Rendra dan para Supporter<br>Creator Social Media: (Rendra: @rixxnzxfyy_) (Dama: @fixyou4mylife)</p>
+    </div>
+    <div class="footer-copyright">
+        &copy; D4RIXXY
+    </div>
+
+    <script>
+        // Password logic
+        function checkPassword() {
+            const input = document.getElementById('password-input').value;
+            const correct = "2025"; // password
+            if(input === correct) {
+                document.getElementById('password-overlay').style.display = 'none';
+            } else {
+                const err = document.getElementById('password-error');
+                err.style.display = 'block';
+                setTimeout(() => err.style.display = 'none', 3000);
+            }
+        }
+        document.getElementById('password-submit').addEventListener('click', checkPassword);
+        document.getElementById('password-input').addEventListener('keydown', function(e){
+            if(e.key === 'Enter') checkPassword();
+        });
+
+        // Greeting Card Logic
+        function updateGreetingCard() {
+            const greetingText = document.getElementById('greeting-text');
+            const greetingDate = document.getElementById('greeting-date');
+            const greetingTime = document.getElementById('greeting-time');
+            const now = new Date();
+            const hour = now.getHours();
+            let greeting;
+            if (hour >= 5 && hour < 12) {
+                greeting = "Good Morning!";
+            } else if (hour >= 12 && hour < 18) {
+                greeting = "Good Afternoon!";
+            } else if (hour >= 18 && hour < 22) {
+                greeting = "Good Evening!";
+            } else {
+                greeting = "Good Night!";
+            }
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const months = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+            const dayName = days[now.getDay()];
+            const day = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            const pad = n => n.toString().padStart(2, '0');
+            const timeStr = pad(now.getHours()) + ":" + pad(now.getMinutes()) + ":" + pad(now.getSeconds());
+            greetingText.textContent = greeting;
+            greetingDate.textContent = `${dayName}, ${day} ${month} ${year}`;
+            greetingTime.textContent = `Time: ${timeStr}`;
+        }
+        updateGreetingCard();
+        setInterval(updateGreetingCard, 1000);
+
+        // All biodata cards as strings
+        const allCards = [
+        `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/q1dn570hkntgd0u0vlyzn/euthalia.jpg?rlkey=p7yqnyigqtouv3tlmc5za6i9z&raw=1" alt="ACHILLES">
+                <h3>EUTHALIA</h3>
+                <p><strong>SEBAGAI:</strong> WALI KELAS 6</p>
+                <p><strong>UMUR:</strong>59</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/4wrl2108p63uxgatb3gzf/Achilles.jpg?rlkey=u2iv4dv6wnkeas7iil36z1zp6&st=5br2mydt&raw=1" alt="ACHILLES">
+                <h3>ACHILLES</h3>
+                <p><strong>ABSEN:</strong> 1</p>
+                <p><strong>UMUR:</strong>13 </p>
+                <p><strong>HOBBY:</strong>FUTSAL</p>
+                <p><strong>CITA-CITA:</strong>POLISI</p>
+                <p><strong>SMP DIMANA:</strong>SMPN 6 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/iwowvkw3nazn3hwa160k2/Bertrand.jpg?rlkey=a9h60n8qgmbbdvzradnttclny&st=hpmz6ewg&raw=1" alt="BETRAND">
+                <h3>BETRAND</h3>
+                <p><strong>ABSEN:</strong>2 </p>
+                <p><strong>UMUR:</strong>13 </p>
+                <p><strong>HOBBY:</strong>NYANYI</p>
+                <p><strong>CITA-CITA:</strong>DR. ANAK</p>
+                <p><strong>SMP DIMANA:</strong>SMPK ANTONIUS MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/2z829ck6w6cln4oym862d/Darren.jpg?rlkey=4mbdmdwb1zkcxcgemw64eovs1&st=bjzat096&raw=1" alt="DARREN">
+                <h3>DARREN</h3>
+                <p><strong>ABSEN:</strong>3 </p>
+                <p><strong>UMUR:</strong> 12</p>
+                <p><strong>HOBBY:</strong>MAIN MUSIK</p>
+                <p><strong>CITA-CITA:</strong>JADI ORANG KAYA</p>
+                <p><strong>SMP DIMANA:</strong>SMPN 1 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/a1xfz2f3sqsvygc3p5zne/Eud.jpg?rlkey=romiokk5ite0p0f9eh3corumm&st=kfxuar3j&raw=1" alt="EUDIA">
+                <h3>EUDIA</h3>
+                <p><strong>ABSEN:</strong>4 </p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>BERENANG</p>
+                <p><strong>CITA-CITA:</strong>DOKTER</p>
+                <p><strong>SMP DIMANA:</strong>SMPN 1 MATARAM/SMPN 2 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/o6ebc7xmqvln03uc08dqx/Ezra.jpg?rlkey=4rqs0b9t7p03uzx6hli5kxyfl&st=gsvrddak&raw=1" alt="EZRA">
+                <h3>EZRA</h3>
+                <p><strong>ABSEN:</strong> 5</p>
+                <p><strong>UMUR:</strong>14 </p>
+                <p><strong>HOBBY:</strong>FUTSAL</p>
+                <p><strong>CITA-CITA:</strong> POLISI</p>
+                <p><strong>SMP DIMANA:</strong>SMPN 2 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/fg7p8601qi7emjj7c8ej2/fiona.jpg?rlkey=rhauell0b9jvoxbk5oxuqhoco&st=5ahj7tkg&raw=1" alt="FIONA">
+                <h3> FIONA</h3>
+                <p><strong>ABSEN:</strong> 6</p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>BERSEPEDA</p>
+                <p><strong>CITA-CITA:</strong>GURU</p>
+                <p><strong>SMP DIMANA:</strong>SMPN 6 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/djtplo02w1x2l6flt669k/Deon.jpg?rlkey=931a93vzernqz5tipjbvre658&st=ubkr4j5c&raw=1" alt="DEON">
+                <h3>DEON</h3>
+                <p><strong>ABSEN:</strong>7 </p>
+                <p><strong>UMUR:</strong>13 </p>
+                <p><strong>HOBBY:</strong>MENGGAMBAR</p>
+                <p><strong>CITA-CITA:</strong>PELLUKIS</p>
+                <p><strong>SMP DIMANA:</strong>SMPK SANTO ANTONIUS MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/wvnc4bbgh4g547ryc0j6s/Vier.jpg?rlkey=kaeosvv4fcsedr906b68hxb56&st=cmbojn3r&raw=1" alt="VIER">
+                <h3>VIER</h3>
+                <p><strong>ABSEN:</strong>8 </p>
+                <p><strong>UMUR:</strong> 12</p>
+                <p><strong>HOBBY:</strong>MAIN BOLA</p>
+                <p><strong>CITA-CITA:</strong>YOUTUBER</p>
+                <p><strong>SMP DIMANA:</strong>SMPK KUSUMA MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/ml6tfkfv29p4yzoessrde/David.jpg?rlkey=9q5nqm2khqxgdvnm7ftbktx1x&st=e5u83wgb&raw=1" alt="DAVID">
+                <h3>DAVID</h3>
+                <p><strong>ABSEN:</strong>9 </p>
+                <p><strong>UMUR:</strong>13 </p>
+                <p><strong>HOBBY:</strong>MAIN BOLA</p>
+                <p><strong>CITA-CITA:</strong>PENGUSAHA</p>
+                <p><strong>SMP DIMANA:</strong>SMPK SANTO ANTONIUS MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/kj4kfrmkorhqwtdc1nths/Dama.jpg?rlkey=2ioo3kz3vopa0eafw29iejwp1&st=mvnati8o&raw=1" alt="DAMA">
+                <h3>DAMA</h3>
+                <p><strong>ABSEN:</strong>10 </p>
+                <p><strong>UMUR:</strong>13</p>
+                <p><strong>HOBBY:</strong>MAIN BASKET, GITAR</p>
+                <p><strong>CITA-CITA:</strong>PENGUSAHA SUKSES</p>
+                <p><strong>SMP DIMANA:</strong>SMPN 6 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/a8pao7uk3csqze7mvmx25/Tera.jpg?rlkey=8bonkyzx5ncfwdrl9bssal82j&st=nmmxjxoq&raw=1" alt="TERA">
+                <h3>TERA</h3>
+                <p><strong>ABSEN:</strong>11 </p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>BERENANG</p>
+                <p><strong>CITA-CITA:</strong>ATLIT</p>
+                <p><strong>SMP DIMANA:</strong>SMPK KUSUMA MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/96zp63dr39ntkces3uqqu/qeisan.jpg?rlkey=jadshx0nczczwlszwkj8t2vqn&st=n2ty1gv6&raw=1" alt="QEISAN">
+                <h3>QEISAN</h3>
+                <p><strong>ABSEN:</strong>12 </p>
+                <p><strong>UMUR:</strong> 12</p>
+                <p><strong>HOBBY:</strong>MAIN</p>
+                <p><strong>CITA-CITA:</strong>DOKTER</p>
+                <p><strong>SMP DIMANA:</strong>SMPK KUSUMA MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">         
+                <img src="https://www.dropbox.com/scl/fi/tmolyb4s03u5upaoby85h/Sabrina.jpg?rlkey=5jd2cjcbs67zdoz0nd0bwpz6y&st=bgbd6q9m&raw=1" alt="">
+                <h3>SABRINA</h3>
+                <p><strong>ABSEN:</strong> 13</p>
+                <p><strong>UMUR:</strong>13 </p>
+                <p><strong>HOBBY:</strong>BERCERITA</p>
+                <P><strong>CITA-CITA:</strong>POLWAN</P>
+                <p><strong>SMP DIMANA:</strong>SMPK SANTO ANTONIUS MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/trag0835ei8t70j2qwuud/queensha.jpg?rlkey=p722e5q7vkibta5dkx7snb7yw&st=xbnbzmhx&raw=1" alt="">
+                <h3>QUEENSHA</h3>
+                <p><strong>ABSEN:</strong>14 </p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>DANCE & MODEL</p>
+                <P><strong>CITA-CITA:</strong>MODEL</P>
+                <p><strong>SMP DIMANA:</strong>TUNAS DAUD</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/48h739tah3ab1mra8vkbf/rafa.jpg?rlkey=q484msfd6qs9ioekxbmb6gfsy&st=mxsqyn26&raw=1" alt="">
+                <h3> RAFA</h3>
+                <p><strong>ABSEN:</strong>15 </p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>SEPAK BOLA</p>
+                <P><strong>CITA-CITA:</strong>POLISI</P>
+                <p><strong>SMP DIMANA:</strong>SMPN 2 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/we97sbryjpgg1wv3bvbpk/Oliv.jpg?rlkey=s3nxosb3y9ef83kdlrff7nm5p&st=2mwpnik2&raw=1" alt="">
+                <h3>OLIV</h3>
+                <p><strong>ABSEN:</strong>16 </p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>BERENANG</p>
+                <P><strong>CITA-CITA:</strong>PRAMUGARI</P>
+                <p><strong>SMP DIMANA:</strong>SMPN 6 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/3a40s57sowv91snmybk8m/Apta.jpg?rlkey=dut31ifvsl0y41mm1al584ly5&st=0jl84q39&raw=1" alt="">
+                <h3>APTA</h3>
+                <p><strong>ABSEN:</strong>17 </p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>FUTSAL</p>
+                <P><strong>CITA-CITA:</strong>ATLIT</P>
+                <p><strong>SMP DIMANA:</strong>SMPN 6 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/03qr37ccdv0mj5zwn6y6e/Grace.jpg?rlkey=j5t61jry1rblqw2hfp4p3t8vc&st=vjd4drsl&raw=1" alt="">
+                <h3>GRACE</h3>
+                <p><strong>ABSEN:</strong>18 </p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>MAIN BASKET</p>
+                <P><strong>CITA-CITA:</strong>BEACUKAI</P>
+                <p><strong>SMP DIMANA:</strong>SMPK SANTO ANTONIUS MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/zjbthoi4cgm78pdl2x3ug/Danis.jpg?rlkey=p4pz2ll3z7qeuvpwj6dktmzey&st=pgo1jckk&raw=1">
+                <h3> DANIS</h3>
+                <p><strong>ABSEN:</strong>19 </p>
+                <p><strong>UMUR:</strong> 12</p>
+                <p><strong>HOBBY:</strong>SEPAK BOLA</p>
+                <P><strong>CITA-CITA:</strong>AKMIL</P>
+                <p><strong>SMP DIMANA:</strong>SMPN 6 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/zl4bd8zm6uq9zjomyjfwt/Jonas.jpg?rlkey=51jdu9myb0gou1xbww489kgy7&st=yxc1z9m0&raw=1">
+                <h3>JONAS </h3>
+                <p><strong>ABSEN:</strong>20 </p>
+                <p><strong>UMUR:</strong>13 </p>
+                <p><strong>HOBBY:</strongSEPEDA></p>
+                <P><strong>CITA-CITA:</strong>C.EO</P>
+                <p><strong>SMP DIMANA:</strong>SMPK KUSUMA MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/zzxsey0uj9x6bml2ck6f7/Alin.jpg?rlkey=zakwhfy61vt7dq6kx4pzj1isl&st=5r3oj3m7&raw=1" alt="">
+                <h3>ALIN</h3>
+                <p><strong>ABSEN:</strong>21 </p>
+                <p><strong>UMUR:</strong>13 </p>
+                <p><strong>HOBBY:</strong>MAIN GAME</p>
+                <P><strong>CITA-CITA:</strong>BEAUTICIAN</P>
+                <p><strong>SMP DIMANA:</strong>SMPK SANTO ANTONIUS MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/gsm1dw6wrdjvhoyhgvn5h/Luke.jpg?rlkey=u4jccboqwn7tk8jt2yv6yj47w&st=8md5yhj8&raw=1" alt="">
+                <h3>LUKE</h3>
+                <p><strong>ABSEN:</strong> 22</p>
+                <p><strong>UMUR:</strong> 13</p>
+                <p><strong>HOBBY:</strong>SURFING</p>
+                <P><strong>CITA-CITA:</strong>ENGINER</P>
+                <p><strong>SMP DIMANA:</strong>ALHETEIA</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/azvgat6xaeahkjkinhde6/Chita.jpg?rlkey=zbizqc9atds1gr177d3umk7fx&st=8lo6wzom&raw=1" alt="">
+                <h3> CHITA </h3>
+                <p><strong>ABSEN:</strong>23 </p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>MERAWAT TANAMAN</p>
+                <P><strong>CITA-CITA:</strong>POLWAN</P>
+                <p><strong>SMP DIMANA:</strong>SMPN 2 MATARAM/SMPN 1 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/v4dr0slf6lmafauxrr23f/Andri.jpg?rlkey=n7lokauxptayvtsunbp6cm2ys&st=hnr1a3rm&raw=1" alt="">
+                <h3>ANDRI</h3>
+                <p><strong>ABSEN:</strong>24 </p>
+                <p><strong>UMUR:</strong> 12</p>
+                <p><strong>HOBBY:</strong>MAIN VOLLY</p>
+                <P><strong>CITA-CITA:</strong>AKPOL</P>
+                <p><strong>SMP DIMANA:</strong>SMPK SANTO ANTONIUS MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">  
+                <img src="https://www.dropbox.com/scl/fi/kimi710xcd592vq9yccda/Rendra.jpg?rlkey=7zp6mj7ofu6htr34newkey5ot&st=383wu43y&raw=1" alt="">
+                <h3>RENDRA</h3>
+                <p><strong>ABSEN:</strong> 25</p>
+                <p><strong>UMUR:</strong>13 </p>
+                <p><strong>HOBBY:</strong>BERMAIN & BELAJAR</p>
+                <P><strong>CITA-CITA:</strong>DOKTER</P>
+                <p><strong>SMP DIMANA:</strong>SMPK KUSUMA MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/pt0ilgm1l5tqbktblh4cn/jiona.jpg?rlkey=g76ceqocqar5trzw8k4952vzz&st=zhmq8wzp&raw=1" alt="">
+                <h3>JIONA</h3>
+                <p><strong>ABSEN:</strong>26 </p>
+                <p><strong>UMUR:</strong>13 </p>
+                <p><strong>HOBBY:</strong>MENARI</p>
+                <P><strong>CITA-CITA:</strong>ATLIT</P>
+                <p><strong>SMP DIMANA:</strong>SMPK SANTO ANTONIUS MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/7f376vu1por7wctwitlcn/Vichel.jpg?rlkey=hz55302lowpcqolioh4c3sxwy&st=0ypkis7h&raw=1" alt="">
+                <h3>VICHEL</h3>
+                <p><strong>ABSEN:</strong>27 </p>
+                <p><strong>UMUR:</strong>13 </p>
+                <p><strong>HOBBY:</strong>MEMBACA</p>
+                <P><strong>CITA-CITA:</strong>APOTEKER</P>
+                <p><strong>SMP DIMANA:</strong>SMPN 6 MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://dl.dropboxusercontent.com/scl/fi/g12qass057k3hww0vgyeq/Kalmani.jpg?rlkey=1jn8e9yng6tel4w21oen9hxax" alt="">
+                <h3> KAYLA</h3>
+                <p><strong>ABSEN:</strong>28 </p>
+                <p><strong>UMUR:</strong> 13</p>
+                <p><strong>HOBBY:</strong>MENARI, BERENANG</p>
+                <P><strong>CITA-CITA:</strong>DIPLOMAT/ARKEOLOG</P>
+                <p><strong>SMP DIMANA:</strong>SMPK SANTO ANTONIUS MATARAM</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://dl.dropboxusercontent.com/scl/fi/rlvk7jbynafq1yndlk3wz/Sisil.jpg?rlkey=eouy3apbd57adn3unhro18xeu" alt="">
+                <h3>SISIL</h3>
+                <p><strong>ABSEN:</strong>29 </p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>BERENANG</p>
+                <P><strong>CITA-CITA:</strong>PENDETA/HAKIM</P>
+                <p><strong>SMP DIMANA:</strong>DI PALU</p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://www.dropbox.com/scl/fi/bm617k4b42cltqy9a26cc/Abigail.jpg?rlkey=xhckb1bu2e71fzanvc03h627m&st=p045ginv&raw=1" alt="">
+                <h3>ABIGAIL</h3>
+                <p><strong>ABSEN:</strong> 30</p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>MENARI</p>
+                <P><strong>CITA-CITA:</strong>DOKTER</P>
+                <p><strong>SMP DIMANA:</strong></p>
+            </div>`,
+            `<div class="biodata-card">
+                <img src="https://dl.dropboxusercontent.com/scl/fi/hs9ohx2vu9fuz2aftysmy/Khaila.jpg?rlkey=jw9e9phpexg108i7dbwy5o4fy" alt="">
+                <h3>KHAILA</h3>
+                <p><strong>ABSEN:</strong>31 </p>
+                <p><strong>UMUR:</strong>12 </p>
+                <p><strong>HOBBY:</strong>MENARI</p>
+                <P><strong>CITA-CITA:</strong>PRAMUGARI</P>
+                <p><strong>SMP DIMANA:</strong>SMPK SANTO ANTONIUS MATARAM</p>
+            </div>`,
+        ];
+        // Helper functions to chunk cards into slides
+        function chunkArray(arr, chunkSize) {
+            const chunks = [];
+            for(let i=0; i < arr.length; i+=chunkSize){
+                chunks.push(arr.slice(i, i+chunkSize));
+            }
+            return chunks;
+        }
+        function getSlides(cards, slidesCount, cardsPerSlide) {
+            let extendedCards = [...cards];
+            while (extendedCards.length < slidesCount * cardsPerSlide) {
+                extendedCards = extendedCards.concat(cards);
+            }
+            extendedCards = extendedCards.slice(0, slidesCount * cardsPerSlide);
+            return chunkArray(extendedCards, cardsPerSlide);
+        }
+        const totalSlides = 16;
+        const cardsPerSlide = 2;
+        const slides = getSlides(allCards, totalSlides, cardsPerSlide);
+
+        const slidesWrapper = document.getElementById('slides-wrapper');
+        slidesWrapper.innerHTML = slides.map(slideCards => {
+            return `<div class="slide">${slideCards.join('')}</div>`;
+        }).join('');
+
+        let currentSlide = 0;
+        function updateSlidePosition() {
+            const offset = -currentSlide * 100;
+            slidesWrapper.style.transform = `translateX(${offset}%)`;
+        }
+        updateSlidePosition();
+
+        // Automatic slide transition every 10 seconds
+        setInterval(() => {
+            currentSlide++;
+            if (currentSlide >= totalSlides) {
+                currentSlide = 0;
+            }
+            updateSlidePosition();
+        }, 10000);
+    </script>
+</body>
+</html>
