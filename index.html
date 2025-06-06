@@ -26,7 +26,13 @@
             font-size: 2.5rem; 
             letter-spacing: 2px; 
             color: #fff; 
-            text-shadow: 0 0 10px #3a8dde, 0 0 20px #3a8dde, 0 0 30px #7b2ff2, 0 0 40px #7b2ff2;
+            text-shadow: 
+                0 0 5px #00aaff, 
+                0 0 10px #00aaff, 
+                0 0 15px #7b2ff2, 
+                0 0 20px #7b2ff2, 
+                0 0 25px #7b2ff2, 
+                0 0 30px #7b2ff2;
         }
         /* Slider Container */
         .slider-container {
@@ -84,8 +90,8 @@
         .biodata-card h3 {
             margin: 0 0 8px 0;
             font-size: 1.4em;
-            color: #00aaff;
-            text-shadow: 0 0 5px #00aaff;
+            color: #00aaff; /* Regular color without glow */
+            /* Removed text-shadow property */
         }
         .biodata-card p {
             margin: 4px 0;
@@ -300,7 +306,7 @@
 
         // All biodata cards as strings
         const allCards = [
-        `<div class="biodata-card">
+            `<div class="biodata-card">
                 <img src="https://www.dropbox.com/scl/fi/q1dn570hkntgd0u0vlyzn/euthalia.jpg?rlkey=p7yqnyigqtouv3tlmc5za6i9z&raw=1" alt="ACHILLES">
                 <h3>EUTHALIA</h3>
                 <p><strong>SEBAGAI:</strong> WALI KELAS 6</p>
@@ -315,7 +321,7 @@
                 <p><strong>CITA-CITA:</strong>POLISI</p>
                 <p><strong>SMP DIMANA:</strong>SMPN 6 MATARAM</p>
             </div>`,
-            `<div class="biodata-card">
+ `<div class="biodata-card">
                 <img src="https://www.dropbox.com/scl/fi/iwowvkw3nazn3hwa160k2/Bertrand.jpg?rlkey=a9h60n8qgmbbdvzradnttclny&st=hpmz6ewg&raw=1" alt="BETRAND">
                 <h3>BETRAND</h3>
                 <p><strong>ABSEN:</strong>2 </p>
@@ -585,7 +591,9 @@
                 <P><strong>CITA-CITA:</strong>PRAMUGARI</P>
                 <p><strong>SMP DIMANA:</strong>SMPK SANTO ANTONIUS MATARAM</p>
             </div>`,
+      
         ];
+
         // Helper functions to chunk cards into slides
         function chunkArray(arr, chunkSize) {
             const chunks = [];
