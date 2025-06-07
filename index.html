@@ -14,11 +14,17 @@
             font-family: Arial, sans-serif;
         }
         body {
-            color: #f6f8f0;
-            background: linear-gradient(135deg, #3a8dde 0%, #7b2ff2 100%);
+            background-image: url('https://dl.dropboxusercontent.com/scl/fi/0gwk5vsapaip5hasgu6hz/IMG-20250517-WA0000.jpg?rlkey=hvbahcmjo23dk94g073pmee2r');
             background-size: cover;
-            background-position: center;
             background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Hapus semua background-color yang ada */
+        .container, .story-container, .choice-container, #score-display {
+            background-color: transparent !important;
         }
         h2.title {
             text-align: center; 
